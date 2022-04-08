@@ -36,7 +36,7 @@ const evalExpr = (expr: dTree, vars: dTree[]): dTree => {
       return vars[treeToNum(hd(tl(expr)))]
 
     default:
-      throw Error('invalid expression')
+      throw new Error('invalid expression')
   }
 }
 
@@ -62,7 +62,7 @@ const execCom = (com: dTree, vars: dTree[]): dTree[] => {
       while (Object.keys(evalExpr(hd(tl(com)), vars)).length !== 0) { // while not nil
         vars = execCom(hd(tl(tl(com))), vars) // run command
         if (counter++ > 1000) { // detect infinite loop
-          throw Error('infinite loop')
+          throw new Error('Bottom')
         }
       }
       break
@@ -73,7 +73,7 @@ const execCom = (com: dTree, vars: dTree[]): dTree[] => {
       break
 
     default:
-      throw Error(`invalid command ${com}`)
+      throw new Error(`invalid command ${com}`)
   }
 
   return vars

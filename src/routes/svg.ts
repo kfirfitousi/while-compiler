@@ -15,7 +15,6 @@ export async function post({ request }) {
       })
     })
     const svg = await res.text()
-    console.log('svg text----\n', svg)
     return {
       status: 200,
       headers: {

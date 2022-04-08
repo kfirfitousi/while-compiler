@@ -74,7 +74,7 @@ test.each(treeStrings)('testing interpreter: prog2 (infinite loop)', (str) => {
   const input = stringToTree(str)
 
   expect(() => interpreter(prog2, input))
-    .toThrowError('infinite loop')
+    .toThrowError('Bottom')
 })
 
 // ------------------------------------------------------------

@@ -1,13 +1,14 @@
 <script>
   import Textarea from '$lib/components/Textarea.svelte'
+  import CodeBlock from '$lib/components/CodeBlock.svelte'
 
   let code = `Y := 0;
 while X do {
-  Y := cons 0, Y;
-  X := tl X
+    Y := cons 0, Y;
+    X := tl X
 }`
   let input = '(nil.nil)'
-  let output
+  let output = {}
   let showTree = false
 
   const submit = async () => {
@@ -24,7 +25,7 @@ while X do {
       output = data
       await fetchImage()
     } else {
-      output = data.error
+      output.error = data.error
     }
   }
 
@@ -68,18 +69,17 @@ while X do {
 <hr/>
 
 <section class="flex flex-col w-full mx-auto my-5 text-gray-700">
-
-  <div class="flex flex-col mb-5 w-2/3 mx-auto">
-    <span>read X;</span>
+  <div class="flex flex-col mb-5 mx-2 lg:mx-20 mx-auto">
+    <span class="pl-1 bg-gray-300">read X;</span>
     <Textarea  
       bind:value={code}
       minRows={5}
       maxRows={50}
     />  
-    <span>write Y;</span>
+    <span class="pl-1 bg-gray-300">write Y;</span>
   </div>
 
-  <div class="flex flex-row mb-5 w-2/3 mx-auto">
+  <div class="flex flex-row mb-5 mx-2 lg:mx-20 mx-auto">
     <span class="mr-2">Input: </span>
     <input bind:value={input} class="w-full mx-auto border border-solid border-gray-300 bg-gray-200">
   </div>
@@ -88,21 +88,25 @@ while X do {
     Run
   </button>
 
-  {#if output}
+  {#if output.error || output.string} 
     <section class="flex flex-col w-full mx-auto">
       <pre class="overflow-scroll border border-solid border-gray-400 my-5">
         <b>Output:</b>
-        Tree notation: {output.string}
+        {#if output.error}
+        {output.error === 'Bottom' ? 'Bottom' : `Error: ${output.error}`}
+        {:else}
+        Tree Notation: {output.string}
         List Notation: {output.listString}
-        Number: {output.number}      
+        Number: {output.number} 
+        {/if}
+             
       </pre>
       <button on:click={() => showTree = !showTree} class="w-fit p-2 mx-auto mb-5 bg-gray-300 text-gray-600 border border-solid border-gray-600 rounded">
         {showTree ? 'Hide' : 'Show'} Output Tree
       </button>
-      {#if showTree && output.image}
+      {#if showTree && output.image && !output.error}
         <div class="w-full mx-auto">
           {@html output.image}
-          <!-- <img class="w-full mx-auto" src={output.image} alt="tree"/> -->
         </div>
       {/if}
     </section>
@@ -110,76 +114,82 @@ while X do {
 
 </section>
 
-<section class="flex flex-col">
+<section class="flex flex-col w-full mx-auto">
   <h1 class="mb-2 text-center text-2xl text-gray-700">Syntax</h1>
   <hr/>
-  <div class="mt-5 flex flex-row items-stretch justify-center">
-    <h2 class="text-center w-24 bg-gray-200 mx-0 my-0 pt-6">Assign:</h2>
-    <pre class="bg-gray-500 text-gray-100 w-2/3 mx-0">
-      Y := 0; // constant
-      <hr/>
-      Y := X; // variable
-      <hr/>
-      Y := {'<expr>'}; // expression
-    </pre>
-  </div>
-  <div class="mt-5 flex flex-row items-stretch justify-center">
-    <h2 class="text-center w-24 bg-gray-200 mx-0 my-0 pt-6">If:</h2>
-    <pre class="bg-gray-500 text-gray-100 w-2/3 mx-0">
-      if {'<expr>'} then
-        {'<command>'}  // note: no ';' here
-      else
-        {'<command>'}; // note: ';' here
-      <hr/>
-      if {'<expr>'} then {'{'}
-        {'<command>'}; // note: ';' here
-        {'<command>'};
-        {'<command>'}  // note: no ';' here
-      {'}'} else {'{'}
-        {'<command>'};
-        {'<command>'}
-      {'}'};
-    </pre>
-  </div>
-  <div class="my-5 flex flex-row items-stretch justify-center">
-    <h2 class="text-center w-24 bg-gray-200 mx-0 my-0 pt-6">While:</h2>
-    <pre class="bg-gray-500 text-gray-100 w-2/3 mx-0">
-      while {'<expr>'} do {'{'}
-        Y := cons 0, Y;
-        X := tl X // note: no ';' here
-      {'}'};
-      <hr/>
-      while {'<expr>'} do {'{ <command> '}};
-      // note: no ';' after command,
-      // but after {'}'}
-    </pre>
-  </div>
-  <div class="my-5 flex flex-row items-stretch justify-center">
-    <h2 class="text-center text-xs w-24 bg-gray-200 mx-0 my-0 pt-6">Expressions:</h2>
-    <pre class="bg-gray-500 text-gray-100 w-2/3 mx-0">
-      // constants
-      // note: cannot use 'nil', use 0
-      1
-      3
-      14
-      <hr/>
-      // variables
-      X
-      Y
-      Z
-      customVar
-      <hr/>
-      tl {'<expr>'}
-      hd {'<expr>'}
-      <hr/>
-      cons {'<expr>'}, {'<expr>'}
-      // note: ',' seperates expressions
-      <hr/>
-      list {'<expr>'}, {'<expr>'}, {'<expr>'}
-      // note: ',' seperates expressions
-      // note: cannot use cons with list
-    </pre>
-  </div>
+  <CodeBlock>
+    <svelte:fragment slot="title">Expressions:</svelte:fragment>>
+    <svelte:fragment slot="code">
+    // constants
+    // note: no 'nil', use 0
+    1
+    3
+    14
+    <hr/>
+    // variables
+    X
+    Y
+    Z
+    customVar
+    <hr/>
+    tl {'<expr>'}
+    hd {'<expr>'}
+    <hr/>
+    cons {'<expr>'}, {'<expr>'}
+    // note: ',' seperates expressions
+    <hr/>
+    list {'<expr>'}, {'<expr>'}, {'<expr>'}
+    // note: ',' seperates expressions
+    // note: cannot use cons with list
+    </svelte:fragment>
+  </CodeBlock>
+  <CodeBlock>
+    <svelte:fragment slot="title">
+    Assign:
+    </svelte:fragment>
+    <svelte:fragment slot="code">
+    Y := 0; // constant
+    <hr/>
+    Y := X; // variable
+    <hr/>
+    Y := {'<expr>'}; // expression
+    </svelte:fragment>
+  </CodeBlock>
+  <CodeBlock>
+    <svelte:fragment slot="title">
+    If:
+    </svelte:fragment>
+    <svelte:fragment slot="code">
+    if {'<expr>'} then
+      {'<command>'}  // note: no ';' here
+    else
+      {'<command>'}; // note: ';' here
+    <hr/>
+    if {'<expr>'} then {'{'}
+      {'<command>'}; // note: ';' here
+      {'<command>'};
+      {'<command>'}  // note: no ';' here
+    {'}'} else {'{'}
+      {'<command>'};
+      {'<command>'}
+    {'}'};
+    </svelte:fragment>
+  </CodeBlock>
+  <CodeBlock>
+    <svelte:fragment slot="title">
+    While:
+    </svelte:fragment>
+    <svelte:fragment slot="code">
+    while {'<expr>'} do {'{'}
+      Y := cons 0, Y;
+      X := tl X // note: no ';' here
+    {'}'};
+    <hr/>
+    while {'<expr>'} do {'{ <command> '}};
+    // note: no ';' after command,
+    // but after {'}'}
+    </svelte:fragment>
+  </CodeBlock>
 </section>
 
 <style>

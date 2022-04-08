@@ -120,7 +120,7 @@ test.each(treeStrings)('testing parser: prog4 (infinite loop)', (str) => {
   const input = stringToTree(str)
 
   expect(() => interpreter(prog, input))
-    .toThrowError('infinite loop')
+    .toThrowError('Bottom')
 })
 
 // ------------------------------------------------------------
