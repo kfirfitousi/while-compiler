@@ -95,7 +95,7 @@ export const list = (...args: dTree[]): dTree => {
 
 export const treeToNum = (tree: dTree | undefined): number => {
   if (tree === {}) return 0
-  if (tree?.head?.head || tree?.head?.tail) throw Error('not a number')
+  if (tree?.head?.head || tree?.head?.tail) return -1
   if (tree?.tail) return 1 + treeToNum(tree?.tail)
   return 0
 }

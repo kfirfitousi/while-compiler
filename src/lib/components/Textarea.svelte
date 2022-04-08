@@ -1,0 +1,59 @@
+<script>
+	export let value = '';
+	export let minRows = 1;
+	export let maxRows;
+	
+	$: minHeight = `${1 + minRows * 1.25}em`;
+	$: maxHeight = maxRows ? `${1 + maxRows * 1.25}em` : `auto`;
+
+  const keydown = (e) => {
+    if (e.key == 'Tab') {
+      e.preventDefault();
+      const start = e.target.selectionStart;
+      const end = e.target.selectionEnd;
+
+      // set textarea value to: text before caret + tab + text after caret
+      e.target.value = e.target.value.substring(0, start) +
+        "\t" + e.target.value.substring(end);
+
+      // put caret at right position again
+      e.target.selectionStart =
+        e.target.selectionEnd = start + 1;
+    }
+  }
+</script>
+
+<div class="container relative">
+	<pre
+		aria-hidden="true"
+		style="min-height: {minHeight}; max-height: {maxHeight}"
+	>{value + '\n'}</pre>
+
+	<textarea class="absolute top-0 h-full w-full pl-4 pt-2 border border-solid border-gray-300 bg-gray-200 leading-5" 
+    bind:value
+    on:keydown={keydown}
+  />
+</div>
+
+<style>
+	/* .container {
+		position: relative;
+	} */
+	
+	pre, textarea {
+		font-family: inherit;
+		/* padding: 0.5em; */
+		/* box-sizing: border-box; */
+		/* border: 1px solid #eee; */
+		/* line-height: 1.2; */
+		overflow: hidden;
+	}
+	
+	textarea {
+		/* position: absolute; */
+		/* width: 100%; */
+		/* height: 100%; */
+		/* top: 0; */
+		resize: none;
+	}
+</style>

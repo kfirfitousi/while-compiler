@@ -37,33 +37,33 @@ export type Expr = {
   expr2: Expr
 }
 
-export function treeToString(): string;
+// export function treeToString(): string;
 
-export function treeToListString(): string;
+// export function treeToListString(): string;
 
-export function stringToTree(): dTree;
+// export function stringToTree(): dTree;
 
-export function isValidTree(): boolean;
+// export function isValidTree(): boolean;
 
-export function numToTree(): dTree;
+// export function numToTree(): dTree;
 
-export function treeToNum(): number;
+// export function treeToNum(): number;
 
-export function hd(): dTree;
+// export function hd(): dTree;
 
-export function tl(): dTree;
+// export function tl(): dTree;
 
-export function cons(): dTree;
+// export function cons(): dTree;
 
-export function list(): dTree;
+// export function list(): dTree;
 
-export function interpreter(): dTree;
+// export function interpreter(): dTree;
 
-export function parser(): dTree;
+// export function parser(): dTree;
 
-export const COM: { [key: string]: dTree };
+// export const COM: { [key: string]: dTree };
 
-export const EXPR: { [key: string]: dTree };
+// export const EXPR: { [key: string]: dTree };
 
 
 

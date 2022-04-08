@@ -9,7 +9,7 @@ import {
 export const parser = (prog: string): dTree => {
   const vars = ['X', 'Y']
 
-  const lines = prog
+  const com = prog
     .replaceAll('\n', '')
     .replaceAll(';', '|')
     .replaceAll('{', '[')
@@ -17,9 +17,7 @@ export const parser = (prog: string): dTree => {
     .split(/(\|)(?=(?:[^\]]|\[[^\]]*\])*$)/)
     .filter((line) => line !== '' && line !== '|')
     .map((line) => line.endsWith('|') ? line.slice(0, -1).trim() : line.trim())
-
-  const com = lines
-    .map((line) => parseCom(line.trim(), vars))
+    .map((line) => parseCom(line, vars))
     .reduce((com, c) => {
       if (com === undefined) return c
       return {
@@ -35,8 +33,6 @@ export const parser = (prog: string): dTree => {
 
 const parseExpr = (expr: string, vars: string[]): Expr => {
   const firstSpace = expr.indexOf(' ')
-  // const secondSpace = expr.indexOf(' ', firstSpace + 1)
-  // const end = expr.indexOf(';') === -1 ? expr.length : expr.indexOf(';')
   let varId: number
 
   switch (true) {
@@ -51,6 +47,7 @@ const parseExpr = (expr: string, vars: string[]): Expr => {
       } 
 
     case /^hd/.test(expr):
+      // hd E
       console.log('parsing hd expression:', expr)
       if (firstSpace === -1) throw new Error(`Invalid expression: ${expr}`)
       return {
@@ -59,6 +56,7 @@ const parseExpr = (expr: string, vars: string[]): Expr => {
       }
 
     case /^tl/.test(expr):
+      // tl E
       console.log('parsing tl expression:', expr)
       if (firstSpace === -1) throw new Error(`Invalid expression: ${expr}`)
       return {
@@ -67,8 +65,8 @@ const parseExpr = (expr: string, vars: string[]): Expr => {
       }
 
     case /^list/.test(expr):
-      console.log('parsing list expression: ', expr)
       // list E, F, G
+      console.log('parsing list expression: ', expr)
       return expr
         .substring(firstSpace + 1)
         .split(',')
@@ -101,7 +99,6 @@ const parseExpr = (expr: string, vars: string[]): Expr => {
 
     default:
       throw new Error(`Invalid expression: ${expr}`);
-      
   }
 }
 
@@ -116,6 +113,7 @@ const parseCom = (com: string, vars: string[]): Com => {
 
   switch (true) {
     case /^if/.test(com):
+      // if E then C else C
       console.log('parsing if command:', com)
       expr = com.split(' ', 2)[1].split('then', 2)[0].trim()
       then = com.slice(com.indexOf('then') + 4, com.indexOf('else')).trim()
@@ -128,6 +126,7 @@ const parseCom = (com: string, vars: string[]): Com => {
       }
 
     case /^while/.test(com):
+      // while E do C
       console.log('parsing while command:', com)
       expr = com.split(' ', 2)[1].split('do', 2)[0].trim()
       _do = com.slice(com.indexOf('do') + 2)
@@ -152,6 +151,7 @@ const parseCom = (com: string, vars: string[]): Com => {
         })
       
     case /^\w/.test(com): // assign
+      // V := E
       console.log('parsing assign command:', com)
       expr = com.split(':=', 2)[1].trim()
       varName = com.split(':=', 2)[0].trim()

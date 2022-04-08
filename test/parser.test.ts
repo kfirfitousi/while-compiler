@@ -94,7 +94,7 @@ test.each(treeStrings)('testing parser: prog3 (len)', (str) => {
   const progText = 
   `Y := 0;
   while X do {
-    Y := cons 0 Y;
+    Y := cons 0, Y;
     X := tl X
   }`
   const prog = parser(progText)
@@ -112,7 +112,7 @@ test.each(treeStrings)('testing parser: prog4 (infinite loop)', (str) => {
   if Y then
     while 1 do {
       X := tl X;
-      Y := cons 0 Y
+      Y := cons 0, Y
     }
   else 
     Y := 0`
@@ -131,11 +131,11 @@ test.each(sums)('testing parser: prog5 (sum)', (a, b, sum) => {
   B := tl X;
   Y := 0;
   while A do {
-    Y := cons 0 Y;
+    Y := cons 0, Y;
     A := tl A
   };
   while B do {
-    Y := cons 0 Y;
+    Y := cons 0, Y;
     B := tl B
   }`
   const prog = parser(progText)
@@ -163,7 +163,9 @@ test.each(treeStrings)('testing parser: prog6 (list)', (str) => {
 // ------------------------------------------------------------
 
 test.each(treeStrings)('testing parser: prog7 (list2)', (str) => {
-  const progText = 'Y := list 1, hd X, tl X, cons X X'
+  const progText =
+  `Z := cons X, X;
+  Y := list 1, hd X, tl X, Z;`
   const prog = parser(progText)
   const input = stringToTree(str)
 
