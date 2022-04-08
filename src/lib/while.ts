@@ -33,12 +33,27 @@ export const stringToTree = (s: string): dTree => {
   const tree: dTree = {}
 
   if (s === 'nil') return tree
+  else if (!s.startsWith('(') || !s.endsWith(')')) throw new Error('invalid tree string')
 
-  const idx = (/^\(+/).test(s.slice(1)) ? s.lastIndexOf(').') + 1 : s.indexOf('.')
-  if (idx === -1) throw new Error('invalid tree string')
-  
+  let idx
+
+  if (s[1] === '(') {
+    let count = 1
+    Array.from(s.slice(2, -1)).forEach((char, i) => {
+      if (char === '(') count++
+      if (char === ')') count--
+      if (count === 0 && char == '.') {
+        idx = i + 2
+        return
+      }
+    })
+  } else {
+    idx = s.indexOf('.')
+    if (idx === -1) throw new Error('invalid tree string')
+  }
+
   const [head, tail] = [s.slice(1, idx), s.slice(idx + 1, s.length - 1)]
-
+  console.log('head:', head, 'tail:', tail)
   tree.head = stringToTree(head)
   tree.tail = stringToTree(tail)
 

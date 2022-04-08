@@ -1,4 +1,3 @@
-import { comment } from 'postcss'
 import type { dTree, Expr, Com } from '../types'
 import {
   numToTree,
