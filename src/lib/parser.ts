@@ -10,10 +10,10 @@ export const parser = (prog: string): dTree => {
   const vars = ['X', 'Y']
 
   const com = prog
-    .replaceAll('\n', '')
-    .replaceAll(';', '|')
-    .replaceAll('{', '[')
-    .replaceAll('}', ']')
+    .replace(/\n/g, '')
+    .replace(/;/g, '|')
+    .replace(/{/g, '[')
+    .replace(/}/g, ']')
     .split(/(\|)(?=(?:[^\]]|\[[^\]]*\])*$)/)
     .filter((line) => line !== '' && line !== '|')
     .map((line) => line.endsWith('|') ? line.slice(0, -1).trim() : line.trim())
