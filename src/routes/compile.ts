@@ -16,7 +16,7 @@ export async function post({ request }) {
         raw: JSON.stringify(output, null, 2),
         string: treeToString(output),
         listString: treeToListString(output),
-        number: number === -1 ? 'not a number' : number
+        number: isNaN(number) ? 'not a number' : number
       }
     }
   } catch (e) {

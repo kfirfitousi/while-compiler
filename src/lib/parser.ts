@@ -142,6 +142,7 @@ const parseCom = (com: string, vars: string[]): Com => {
       }
     
     case /\n*\t*\s*\[/.test(com): // chained commands
+      // [ C1 ; C2 ; C3 ]
       console.log('parsing chained command:', com)
       if (!com.includes(']')) throw new Error(`Invalid command: ${com}`)
       coms = com.slice(com.indexOf('[') + 1, com.indexOf(']', com.indexOf('[') + 1)).split('|')      
@@ -156,7 +157,7 @@ const parseCom = (com: string, vars: string[]): Com => {
           }
         })
       
-    case /^\w/.test(com): // assign
+    case /^[A-Za-z]/.test(com): // assign
       // V := E
       console.log('parsing assign command:', com)
       if (!com.includes(':=')) throw new Error(`Invalid command: ${com}`)
