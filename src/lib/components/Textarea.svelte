@@ -6,7 +6,6 @@
 	$: minHeight = `${1 + minRows * 1.25}em`;
 	$: maxHeight = maxRows ? `${1 + maxRows * 1.25}em` : `auto`;
 
-
   const keydown = (e) => {
     if (e.key == 'Tab') {
       e.preventDefault();
@@ -23,9 +22,8 @@
     }
   }
 </script>
-
 <div class="container relative">
-	<pre aria-hidden="true"style="min-height: {minHeight}; max-height: {maxHeight}">{value + '\n'}</pre>
+	<pre class="leading-5 py-2" aria-hidden="true" style="min-height: {minHeight}; max-height: {maxHeight}">{value + '\n'}</pre>
 	<textarea class="absolute top-0 h-full w-full pl-4 pt-2 border border-solid border-gray-300 bg-gray-200 leading-5" 
     bind:value
     on:keydown={keydown}

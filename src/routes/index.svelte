@@ -56,7 +56,7 @@ while X do {
 
   <div class="flex flex-row mb-5 mx-2 lg:mx-20 mx-auto">
     <span class="mr-2">Input: </span>
-    <input bind:value={input} class="w-full mx-auto border border-solid border-gray-300 bg-gray-200">
+    <input bind:value={input} class="w-full mx-auto pl-1 border border-solid border-gray-300 bg-gray-200">
   </div>
 
   <button on:click={submit} class="w-20 p-2 mx-auto bg-gray-300 text-gray-600 border border-solid border-gray-600 rounded">
