@@ -1,4 +1,4 @@
-import type { dTree } from '../types'
+import type { dTree } from 'src/types'
 import {
   treeToNum,
   hd,
@@ -6,7 +6,7 @@ import {
   cons,
   COM,
   EXPR
-} from './while'
+} from '$lib/while'
 
 export const interpreter = (p: dTree, d: dTree): dTree => {
   let vars: dTree[] = Array(50).fill({}) // initialize variables to nil

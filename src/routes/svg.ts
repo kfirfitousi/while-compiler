@@ -9,10 +9,7 @@ export async function post({ request }) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ 
-        graph,
-        width: 600
-      })
+      body: JSON.stringify({ graph })
     })
     const svg = await res.text()
     return {

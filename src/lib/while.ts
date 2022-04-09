@@ -1,4 +1,4 @@
-import type { dTree } from '../types'
+import type { dTree } from 'src/types'
 
 export const treeToString = (tree: dTree): string => {
   if (!isValidTree(tree)) throw new Error('invalid tree')

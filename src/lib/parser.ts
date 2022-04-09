@@ -1,10 +1,10 @@
-import type { dTree, Expr, Com } from '../types'
+import type { dTree, Expr, Com } from 'src/types'
 import {
   numToTree,
   list,
   EXPR,
   COM
-} from './while'
+} from '$lib/while'
 
 export const parser = (prog: string): dTree => {
   const vars = ['X', 'Y']

@@ -173,5 +173,7 @@ while X do {
 <style>
   :global(svg) {
     margin: 0 auto;
+    max-width: 100%;
+    height: fit-content;
   }
 </style>
