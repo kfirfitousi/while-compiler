@@ -1,4 +1,6 @@
-<script>
+<script lang="ts">
+  import type { CompileOutput } from 'src/types'
+  import { fetchImage } from '$lib/graphviz'
   import Textarea from '$lib/components/Textarea.svelte'
   import CodeBlock from '$lib/components/CodeBlock.svelte'
 
@@ -8,7 +10,7 @@ while X do {
     X := tl X
 }`
   let input = '(nil.nil)'
-  let output = {}
+  let output: CompileOutput = {}
   let showTree = false
 
   const submit = async () => {
@@ -21,46 +23,20 @@ while X do {
     })
     const data = await res.json();
     
-    if (res.ok) {
-      output = data
-      await fetchImage()
-    } else {
+    if (!res.ok) {
       output.error = data.error
+      return
+    }
+    
+    output = data
+    
+    try {
+      output.image = await fetchImage(output.raw)
+    }
+    catch (e) {
+      console.error(e)
     }
   }
-
-  const fetchImage = async () => {
-    let graph = 'graph{nodesep=1;ranksep=0.5;bgcolor="transparent";node [shape=point width=0.2];'
-    let tree = await JSON.parse(output.raw)
-    let node = 1
-
-    if (tree.head && tree.tail) {
-      graph = addChildNodes(graph, node, tree)
-    }
-
-    graph += '}'
-
-    const res = await fetch('/svg', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ graph })
-    })
-
-    if (res.ok) {
-      const data = await res.json()
-      output.image = data.svg
-    }
-  }
-
-  const addChildNodes = (code, node, tree) => {
-    code += `${node}--${2*node + 1};${node}--${2*node + 2};`
-    if (tree.head?.head) code = addChildNodes(code, 2*node + 1, tree.head)
-    if (tree.tail?.head) code = addChildNodes(code, 2*node + 2, tree.tail)
-    return code
-  }
-
 </script>
 
 <h1 class="mb-4 text-center text-4xl text-gray-700">
@@ -97,7 +73,7 @@ while X do {
         {:else}
         Tree Notation: {output.string}
         List Notation: {output.listString}
-        Number: {output.number} 
+        Number: {output.number === -1 ? 'Not a number ': output.number}
         {/if}
              
       </pre>
@@ -118,77 +94,79 @@ while X do {
   <h1 class="mb-2 text-center text-2xl text-gray-700">Syntax</h1>
   <hr/>
   <CodeBlock>
-    <svelte:fragment slot="title">Expressions:</svelte:fragment>>
-    <svelte:fragment slot="code">
-    // constants
-    // note: no 'nil', use 0
-    1
-    3
-    14
-    <hr/>
-    // variables
-    X
-    Y
-    Z
-    customVar
-    <hr/>
-    tl {'<expr>'}
-    hd {'<expr>'}
-    <hr/>
-    cons {'<expr>'}, {'<expr>'}
-    // note: ',' seperates expressions
-    <hr/>
-    list {'<expr>'}, {'<expr>'}, {'<expr>'}
-    // note: ',' seperates expressions
-    // note: cannot use cons with list
-    </svelte:fragment>
+  <svelte:fragment slot="title">Expressions:</svelte:fragment>>
+  <svelte:fragment slot="code">
+  // constants
+  > nil
+  > 0
+  > 1
+  > 14
+  <hr/>
+  // variables
+  > X
+  > Y
+  > Z
+  > customVar
+  <hr/>
+  > tl {'<expr>'}
+  > hd {'<expr>'}
+  > hd tl {'<expr>\n'}
+  <hr/>
+  > cons {'<expr>'}, {'<expr>'}
+  // note: ',' seperates expressions
+  <hr/>
+  > list {'<expr>'}, {'<expr>'}, {'<expr>'}
+  // note: ',' seperates expressions
+  // note: cannot use cons with list
+  </svelte:fragment>
   </CodeBlock>
   <CodeBlock>
-    <svelte:fragment slot="title">
-    Assign:
-    </svelte:fragment>
-    <svelte:fragment slot="code">
-    Y := 0; // constant
-    <hr/>
-    Y := X; // variable
-    <hr/>
-    Y := {'<expr>'}; // expression
-    </svelte:fragment>
+  <svelte:fragment slot="title">
+  Assign:
+  </svelte:fragment>
+  <svelte:fragment slot="code">
+  > Y := 0; // constant
+  <hr/>
+  > Y := X; // variable
+  <hr/>
+  > Y := {'<expr>'}; // expression
+  </svelte:fragment>
   </CodeBlock>
   <CodeBlock>
-    <svelte:fragment slot="title">
-    If:
-    </svelte:fragment>
-    <svelte:fragment slot="code">
-    if {'<expr>'} then
-      {'<command>'}  // note: no ';' here
-    else
-      {'<command>'}; // note: ';' here
-    <hr/>
-    if {'<expr>'} then {'{'}
-      {'<command>'}; // note: ';' here
-      {'<command>'};
-      {'<command>'}  // note: no ';' here
-    {'}'} else {'{'}
-      {'<command>'};
-      {'<command>'}
-    {'}'};
-    </svelte:fragment>
+  <svelte:fragment slot="title">
+  If:
+  </svelte:fragment>
+  <svelte:fragment slot="code">
+  > if {'<expr>'} then
+    {'<command>'}  // note: no ';' here
+  else
+    {'<command>'}; // note: ';' here
+  <hr/>
+  > if {'<expr>'} then {'{\n'}
+    {'\t<command>'}; // note: ';' here
+    {'<command>'};
+    {'<command>'}  // note: no ';' here
+  {'}'} else {'{\n'}
+    {'\t<command>'};
+    {'<command>\n'}
+  {'}'};
+  </svelte:fragment>
   </CodeBlock>
   <CodeBlock>
-    <svelte:fragment slot="title">
-    While:
-    </svelte:fragment>
-    <svelte:fragment slot="code">
-    while {'<expr>'} do {'{'}
-      Y := cons 0, Y;
-      X := tl X // note: no ';' here
-    {'}'};
-    <hr/>
-    while {'<expr>'} do {'{ <command> '}};
-    // note: no ';' after command,
-    // but after {'}'}
-    </svelte:fragment>
+  <svelte:fragment slot="title">
+  While:
+  </svelte:fragment>
+  <svelte:fragment slot="code">
+  > while {'<expr>'} do {'{\n'}
+    {'\t<command>'};
+    {'<command>'} // note: no ';' here
+  {'}'};
+  <hr/>
+  > while {'<expr>'} do {'{\n\t<command>'}
+  };
+  // note: no ';' after command,
+  // but after '}'
+  </svelte:fragment>
   </CodeBlock>
 </section>
 

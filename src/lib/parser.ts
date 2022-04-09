@@ -14,6 +14,7 @@ export const parser = (prog: string): dTree => {
     .replace(/;/g, '|')
     .replace(/{/g, '[')
     .replace(/}/g, ']')
+    .replace(/nil/g, '0')
     .split(/(\|)(?=(?:[^\]]|\[[^\]]*\])*$)/)
     .filter((line) => line !== '' && line !== '|')
     .map((line) => line.endsWith('|') ? line.slice(0, -1).trim() : line.trim())
@@ -103,14 +104,6 @@ const parseExpr = (expr: string, vars: string[]): Expr => {
 }
 
 const parseCom = (com: string, vars: string[]): Com => {
-  let expr: string
-  let then: string
-  let _else: string
-  let _do: string
-  let coms: string[]
-  let varName: string
-  let varId: number
-
   switch (true) {
     case /^if/.test(com):
       // if E then C else C
@@ -118,34 +111,45 @@ const parseCom = (com: string, vars: string[]): Com => {
       if (!com.includes('then') || !com.includes('else')) {
         throw new Error(`Invalid if command: ${com}`)
       }
-      expr = com.split(' ', 2)[1].split('then', 2)[0].trim()
-      then = com.slice(com.indexOf('then') + 4, com.indexOf('else')).trim()
-      _else = com.slice(com.indexOf('else') + 4).trim()
       return {
         type: 'if',
-        expr: parseExpr(expr, vars),
-        then: parseCom(then, vars),
-        _else: parseCom(_else, vars)
+        expr: parseExpr(
+          com.split(' ', 2)[1].split('then', 2)[0].trim(),
+          vars
+        ),
+        then: parseCom(
+          com.slice(com.indexOf('then') + 4, com.indexOf('else')).trim(),
+          vars
+        ),
+        _else: parseCom(
+          com.slice(com.indexOf('else') + 4).trim(), 
+          vars
+        )
       }
 
     case /^while/.test(com):
       // while E do C
       console.log('parsing while command:', com)
       if (!com.includes('do')) throw new Error(`Invalid while command: ${com}`)
-      expr = com.slice(5).split('do')[0].trim()
-      _do = com.slice(com.indexOf('do') + 2)
       return {
         type: 'while',
-        expr: parseExpr(expr, vars),
-        do: parseCom(_do, vars)
+        expr: parseExpr(
+          com.slice(5).split('do')[0].trim(),
+          vars
+        ),
+        do: parseCom(
+          com.slice(com.indexOf('do') + 2),
+          vars
+        )
       }
     
     case /\n*\t*\s*\[/.test(com): // chained commands
       // [ C1 ; C2 ; C3 ]
       console.log('parsing chained command:', com)
       if (!com.includes(']')) throw new Error(`Invalid command: ${com}`)
-      coms = com.slice(com.indexOf('[') + 1, com.indexOf(']', com.indexOf('[') + 1)).split('|')      
-      return coms
+      return com
+        .slice(com.indexOf('[') + 1, com.indexOf(']', com.indexOf('[') + 1))
+        .split('|')
         .map((line) => parseCom(line.trim(), vars))
         .reduce((com, c) => {
           if (com === undefined) return c
@@ -156,20 +160,20 @@ const parseCom = (com: string, vars: string[]): Com => {
           }
         })
       
-    case /^[A-Za-z]/.test(com): // assign
+    case /^[A-Za-z]/.test(com): { // assign
       // V := E
       console.log('parsing assign command:', com)
       if (!com.includes(':=')) throw new Error(`Invalid command: ${com}`)
-      expr = com.split(':=', 2)[1].trim()
-      varName = com.split(':=', 2)[0].trim()
-      varId = vars.indexOf(varName) + 1
-      if (varId === 0) varId = vars.push(varName)
+      const varName = com.split(':=', 2)[0].trim()
       return {
         type: 'assign',
-        varId,
-        expr: parseExpr(expr, vars)
+        varId: vars.indexOf(varName) === -1 ? vars.push(varName) : vars.indexOf(varName) + 1,
+        expr: parseExpr(
+          com.split(':=', 2)[1].trim(),
+          vars
+        )
       }
-    
+    }
     default:
       throw new Error(`Invalid command: ${com}`);
   }
@@ -191,6 +195,7 @@ export const buildComTree = (com: Com): dTree => {
         list(EXPR.var, numToTree(com.varId)),
         buildExprTree(com.expr)
       )
+
     case 'if':
       return list(
         COM.if,
@@ -198,12 +203,14 @@ export const buildComTree = (com: Com): dTree => {
         buildComTree(com.then),
         buildComTree(com._else)
       )
+
     case 'while':
       return list(
         COM.while,
         buildExprTree(com.expr),
         buildComTree(com.do)
       )
+
     case 'chain':
       return list(
         COM.chain,
@@ -220,21 +227,25 @@ const buildExprTree = (expr: Expr): dTree => {
         EXPR.quote,
         expr.d
       )
+
     case 'hd':
       return list(
         EXPR.hd,
         buildExprTree(expr.expr)
       )
+
     case 'tl':
       return list(
         EXPR.tl,
         buildExprTree(expr.expr)
       )
+
     case 'var':
       return list(
         EXPR.var,
         numToTree(expr.varId)
       )
+
     case 'cons':
       return list(
         EXPR.cons,

@@ -37,6 +37,15 @@ export type Expr = {
   expr2: Expr
 }
 
+export type CompileOutput = {
+  raw?: string,
+  string?: string,
+  listString?: string,
+  number?: number,
+  image?: string,
+  error?: string
+}
+
 // export function treeToString(): string;
 
 // export function treeToListString(): string;

@@ -41,14 +41,12 @@ const evalExpr = (expr: dTree, vars: dTree[]): dTree => {
 }
 
 const execCom = (com: dTree, vars: dTree[]): dTree[] => {
-  let varId: dTree
-  let counter = 0
-
   switch (hd(com)) {
-    case COM.assign:
-      varId = hd(tl(hd(tl(com)))) // index of variable
+    case COM.assign: {
+      const varId = hd(tl(hd(tl(com)))) // index of variable
       vars[treeToNum(varId)] = evalExpr(hd(tl(tl(com))), vars) // assign to variable
       break
+    }
 
     case COM.if:
       if (Object.keys(evalExpr(hd(tl(com)), vars)).length !== 0) { // if not nil
@@ -58,7 +56,8 @@ const execCom = (com: dTree, vars: dTree[]): dTree[] => {
       }
       break
     
-    case COM.while:
+    case COM.while: {
+      let counter = 0
       while (Object.keys(evalExpr(hd(tl(com)), vars)).length !== 0) { // while not nil
         vars = execCom(hd(tl(tl(com))), vars) // run command
         if (counter++ > 1000) { // detect infinite loop
@@ -66,6 +65,7 @@ const execCom = (com: dTree, vars: dTree[]): dTree[] => {
         }
       }
       break
+    }
     
     case COM.chain:
       vars = execCom(hd(tl(com)), vars) // first command
