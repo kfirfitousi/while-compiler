@@ -24,7 +24,7 @@
 </script>
 <div class="container relative">
 	<pre class="leading-5 py-2" aria-hidden="true" style="min-height: {minHeight}; max-height: {maxHeight}">{value + '\n'}</pre>
-	<textarea class="absolute top-0 h-full w-full pl-4 pt-2 border border-solid border-gray-300 bg-gray-200 leading-5" 
+	<textarea class="absolute top-0 h-full w-full pl-4 pt-2 bg-gray-300 text-gray-700 leading-5 border-x border-solid border-gray-800" 
     bind:value
     on:keydown={keydown}
   />

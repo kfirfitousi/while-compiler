@@ -1,7 +1,7 @@
 import type { dTree } from 'src/types'
 
 export const fetchImage = async (rawTree: string): Promise<string> => {
-  let graph = 'graph{nodesep=1;ranksep=0.5;bgcolor="transparent";node [shape=point width=0.2];0;'
+  let graph = 'graph{nodesep=1;ranksep=0.5;bgcolor="transparent";node[shape=point width=0.2 color="#d1d5db"];edge[color="#d1d5db"];0;'
   const tree = await JSON.parse(rawTree)
 
   if (tree.head && tree.tail) {

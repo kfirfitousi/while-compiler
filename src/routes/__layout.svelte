@@ -6,7 +6,7 @@
     <slot></slot>
 </main>
 
-<footer class="contatiner w-full lg:w-2/3 xl:w-1/2 mx-auto my-5 text-center text-gray-500">
+<footer class="contatiner w-full lg:w-2/3 xl:w-1/2 mx-auto my-5 text-center text-gray-400">
   <div class="flex flex-col w-full">
     <div class="flex flex-row flex-wrap md:flex-nowrap justify-center items-center mx-auto my-2 w-full">
       <span class="mr-3 w-full md:w-auto">Built with</span>

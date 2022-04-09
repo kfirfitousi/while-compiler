@@ -39,33 +39,33 @@ while X do {
   }
 </script>
 
-<h1 class="mb-4 text-center text-4xl text-gray-700">
+<h1 class="mb-4 text-center text-4xl text-gray-200">
   WHILE Compiler
 </h1>
 <hr/>
 
-<section class="flex flex-col w-full mx-auto my-5 text-gray-700">
+<section class="flex flex-col w-full mx-auto my-5">
   <div class="flex flex-col mb-5 mx-2 lg:mx-20 mx-auto">
-    <span class="pl-1 bg-gray-300">read X;</span>
+    <span class="pl-1 bg-gray-300 text-gray-600 border-t border-x border-solid border-gray-800">read X;</span>
     <Textarea  
       bind:value={code}
       minRows={5}
     />  
-    <span class="pl-1 bg-gray-300">write Y;</span>
+    <span class="pl-1 bg-gray-300 text-gray-600 border-b border-x border-solid border-gray-800">write Y;</span>
   </div>
 
   <div class="flex flex-row mb-5 mx-2 lg:mx-20 mx-auto">
-    <span class="mr-2">Input: </span>
-    <input bind:value={input} class="w-full mx-auto pl-1 border border-solid border-gray-300 bg-gray-200">
+    <span class="mr-2 text-gray-300">Input: </span>
+    <input bind:value={input} class="w-full mx-auto pl-1 border border-solid border-gray-800 bg-gray-300 text-gray-700">
   </div>
 
-  <button on:click={submit} class="w-20 p-2 mx-auto bg-gray-300 text-gray-600 border border-solid border-gray-600 rounded">
+  <button on:click={submit} class="w-20 p-2 mx-auto bg-gray-300 text-gray-600 border border-solid border-gray-800 rounded">
     Run
   </button>
 
   {#if output.error || output.string} 
     <section class="flex flex-col w-full mx-auto">
-      <pre class="overflow-scroll border border-solid border-gray-400 my-5">
+      <pre class="overflow-scroll text-gray-300 border border-solid border-gray-400 my-5">
         <b>Output:</b>
         {#if output.error}
         {output.error === 'Bottom' ? 'Bottom' : `Error: ${output.error}`}
@@ -75,7 +75,7 @@ while X do {
         Number: {output.number === -1 ? 'Not a number ': output.number}
         {/if}      
       </pre>
-      <button on:click={() => showTree = !showTree} class="w-fit p-2 mx-auto mb-5 bg-gray-300 text-gray-600 border border-solid border-gray-600 rounded">
+      <button on:click={() => showTree = !showTree} class="w-fit p-2 mx-auto mb-5 bg-gray-300 text-gray-600 border border-solid border-gray-800 rounded">
         {showTree ? 'Hide' : 'Show'} Output Tree
       </button>
       {#if showTree && output.image && !output.error}
@@ -89,7 +89,7 @@ while X do {
 </section>
 
 <section class="flex flex-col w-full mx-auto">
-  <h1 class="mb-2 text-center text-2xl text-gray-700">Syntax</h1>
+  <h1 class="mb-2 text-center text-2xl text-gray-200">Syntax</h1>
   <hr/>
   <CodeBlock>
   <svelte:fragment slot="title">Expressions:</svelte:fragment>>
