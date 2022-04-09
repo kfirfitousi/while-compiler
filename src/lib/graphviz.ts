@@ -1,10 +1,12 @@
 import type { dTree } from 'src/types'
 
 export const fetchImage = async (rawTree: string): Promise<string> => {
-  let graph = 'graph{nodesep=1;ranksep=0.5;bgcolor="transparent";node [shape=point width=0.2];1;'
+  let graph = 'graph{nodesep=1;ranksep=0.5;bgcolor="transparent";node [shape=point width=0.2];0;'
   const tree = await JSON.parse(rawTree)
 
-  if (tree.head && tree.tail) graph += addNodes(tree)
+  if (tree.head && tree.tail) {
+    graph += addChildNodes(tree, '0')
+  }
 
   graph += '}'
 
@@ -22,22 +24,11 @@ export const fetchImage = async (rawTree: string): Promise<string> => {
   return data.svg
 }
 
-const addNodes = (root: dTree): string => {
-  let code = ''
-  let n = 0
-  let nodeNum = 0
-  const queue = [root];
-  while (queue.length > 0) {
-    const node = queue.shift(); // mutates the queue
-    nodeNum = n
-    if (node.head) {
-      code += nodeNum +'--'+ (++n) + ';'
-      queue.push(node.head)
-    }
-    if (node.tail) {
-      code += nodeNum +'--'+ (++n) + ';'
-      queue.push(node.tail)
-    }
-  }
+const addChildNodes = (tree: dTree, node: string): string => {
+  const head = node + '0'
+  const tail = node + '1'
+  let code = node + '--' + head + ';' + node + '--' + tail + ';'
+  if (tree.head?.head) code += addChildNodes(tree.head, head)
+  if (tree.tail?.head) code += addChildNodes(tree.tail, tail)
   return code
 }
