@@ -111,7 +111,7 @@ const parseCom = (com: string, vars: string[]): Com => {
       return {
         type: 'if',
         expr: parseExpr(
-          com.split(' ', 2)[1].split('then', 2)[0].trim(),
+          com.split('if')[1].split('then')[0].trim(),
           vars
         ),
         then: parseCom(
@@ -147,6 +147,7 @@ const parseCom = (com: string, vars: string[]): Com => {
       return com
         .slice(com.indexOf('[') + 1, com.indexOf(']', com.indexOf('[') + 1))
         .split('|')
+        .filter(Boolean)
         .map((line) => parseCom(line.trim(), vars))
         .reduce((com, c) => {
           if (com === undefined) return c

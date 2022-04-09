@@ -92,28 +92,31 @@ while X do {
   <h1 class="mb-2 text-center text-2xl text-gray-200">Syntax</h1>
   <hr/>
   <CodeBlock>
-  <svelte:fragment slot="title">Expressions:</svelte:fragment>>
+  <svelte:fragment slot="title">Expressions</svelte:fragment>>
   <svelte:fragment slot="code">
-  // constants
+  <b>Constants</b>
   > nil
   > 0
   > 1
   > 14
   <hr/>
-  // variables
+  {'\n '}
+  <b>Variables</b>
   > X
   > Y
   > Z
   > customVar
   <hr/>
-  > tl {'<expr>'}
-  > hd {'<expr>'}
-  > hd tl {'<expr>\n'}
+  > <b>tl</b> {'<expr>'}
+  > <b>hd</b> {'<expr>'}
+  > <b>hd tl</b> {'<expr>'}
+  > <b>tl hd tl tl</b> {'<expr>\n'}
   <hr/>
-  > cons {'<expr>'}, {'<expr>'}
+  > <b>cons</b> {'<expr>'}, {'<expr>'}
+  > <b>cons</b> {'<expr>'}, <b>cons</b> {'<expr>'}, {'<expr>'}
   // note: ',' seperates expressions
   <hr/>
-  > list {'<expr>'}, {'<expr>'}, {'<expr>'}
+  > <b>list</b> {'<expr>'}, {'<expr>'}, {'<expr>'}, {'<expr>'}
   // note: ',' seperates expressions
   // note: cannot use cons with list
   </svelte:fragment>
@@ -123,47 +126,58 @@ while X do {
   Assign:
   </svelte:fragment>
   <svelte:fragment slot="code">
-  > Y := 0; // constant
+  <b>Constant</b>
+  > Y := nil;
+  > X := 10;
   <hr/>
-  > Y := X; // variable
+  {'\n '}
+  <b>Variable</b>
+  > Y := X;
+  > A := B; 
   <hr/>
-  > Y := {'<expr>'}; // expression
+  {'\n '}
+  <b>Expression</b>
+  > Y := {'<expr>'};
   </svelte:fragment>
   </CodeBlock>
   <CodeBlock>
   <svelte:fragment slot="title">
-  If:
+  If
   </svelte:fragment>
   <svelte:fragment slot="code">
-  > if {'<expr>'} then
-    {'<command>'}  // note: no ';' here
-  else
-    {'<command>'}; // note: ';' here
+  <b>One command</b>
+  > <b>if</b> {'<expr>'} <b>then</b>
+    {'\n\t<command>'}  // note: no ';' here
+  <b>else</b>
+    {'\n\t<command>'}; // note: ';' here
   <hr/>
-  > if {'<expr>'} then {'{\n'}
-    {'\t<command>'}; // note: ';' here
+  {'\n '}
+  <b>Multiple commands</b>
+  > <b>if</b> {'<expr>'} <b>then</b> {'{\n'}
+    {'\t<command>'};
     {'<command>'};
-    {'<command>'}  // note: no ';' here
-  {'}'} else {'{\n'}
+    {'<command>'};
+  {'}'} <b>else</b> {'{\n'}
     {'\t<command>'};
-    {'<command>\n'}
-  {' }'};
+    {'<command>;\n'}
+  {' }'}; 
   </svelte:fragment>
   </CodeBlock>
   <CodeBlock>
   <svelte:fragment slot="title">
-  While:
+  While
   </svelte:fragment>
   <svelte:fragment slot="code">
-  > while {'<expr>'} do {'{\n'}
-    {'\t<command>'};
-    {'<command>'} // note: no ';' here
-  {'}'};
-  <hr/>
-  > while {'<expr>'} do {'{\n\t<command>'}
+  <b>One command</b>
+  > <b>while</b> {'<expr>'} <b>do</b> {'{\n\t<command>;'}
   };
-  // note: no ';' after command,
-  // but after '}'
+  <hr/>
+  {'\n '}
+  <b>Multiple commands</b>
+  > <b>while</b> {'<expr>'} <b>do</b> {'{\n'}
+    {'\t<command>'};
+    {'<command>'};
+  {'}'};
   </svelte:fragment>
   </CodeBlock>
 </section>
