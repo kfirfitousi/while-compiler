@@ -4,9 +4,7 @@ export const fetchImage = async (rawTree: string): Promise<string> => {
   let graph = 'graph{nodesep=1;ranksep=0.5;bgcolor="transparent";node [shape=point width=0.2];1;'
   const tree = await JSON.parse(rawTree)
 
-  if (tree.head && tree.tail) {
-    graph = addChildNodes(graph, 1, tree)
-  }
+  if (tree.head && tree.tail) graph += addNodes(tree)
 
   graph += '}'
 
@@ -24,9 +22,22 @@ export const fetchImage = async (rawTree: string): Promise<string> => {
   return data.svg
 }
 
-const addChildNodes = (code: string, node: number, tree: dTree): string => {
-  code += `${node}--${2*node + 1};${node}--${2*node + 2};`
-  if (tree.head?.head) code = addChildNodes(code, 2*node + 1, tree.head)
-  if (tree.tail?.head) code = addChildNodes(code, 2*node + 2, tree.tail)
+const addNodes = (root: dTree): string => {
+  let code = ''
+  let n = 0
+  let nodeNum = 0
+  const queue = [root];
+  while (queue.length > 0) {
+    const node = queue.shift(); // mutates the queue
+    nodeNum = n
+    if (node.head) {
+      code += nodeNum +'--'+ (++n) + ';'
+      queue.push(node.head)
+    }
+    if (node.tail) {
+      code += nodeNum +'--'+ (++n) + ';'
+      queue.push(node.tail)
+    }
+  }
   return code
 }
