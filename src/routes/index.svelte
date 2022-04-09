@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { CompileOutput } from 'src/types'
   import { fetchImage } from '$lib/graphviz'
-  import Textarea from '$lib/components/Textarea.svelte'
   import CodeBlock from '$lib/components/CodeBlock.svelte'
+  import Textarea from '$lib/components/Textarea.svelte'
 
   let code = `Y := 0;
 while X do {
@@ -40,7 +40,7 @@ while X do {
 </script>
 
 <h1 class="mb-4 text-center text-4xl text-gray-700">
-  WHILE compiler
+  WHILE Compiler
 </h1>
 <hr/>
 
@@ -50,7 +50,6 @@ while X do {
     <Textarea  
       bind:value={code}
       minRows={5}
-      maxRows={50}
     />  
     <span class="pl-1 bg-gray-300">write Y;</span>
   </div>
@@ -74,8 +73,7 @@ while X do {
         Tree Notation: {output.string}
         List Notation: {output.listString}
         Number: {output.number === -1 ? 'Not a number ': output.number}
-        {/if}
-             
+        {/if}      
       </pre>
       <button on:click={() => showTree = !showTree} class="w-fit p-2 mx-auto mb-5 bg-gray-300 text-gray-600 border border-solid border-gray-600 rounded">
         {showTree ? 'Hide' : 'Show'} Output Tree
@@ -149,7 +147,7 @@ while X do {
   {'}'} else {'{\n'}
     {'\t<command>'};
     {'<command>\n'}
-  {'}'};
+  {' }'};
   </svelte:fragment>
   </CodeBlock>
   <CodeBlock>

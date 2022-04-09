@@ -13,10 +13,6 @@ export const treeToString = (tree: dTree): string => {
 export const treeToListString = (tree: dTree): string => {
   if (!isValidTree(tree)) throw new Error('invalid tree')
 
-  if (tree === {}) {
-    return '()'
-  }
-
   let result = '('
 
   while (tree.head) {
@@ -48,13 +44,9 @@ export const stringToTree = (s: string): dTree => {
       }
     })
   }
-  // } else {
-  //   idx = s.indexOf('.')
-  //   if (idx === -1) throw new Error('invalid tree string')
-  // }
 
   const [head, tail] = [s.slice(1, idx), s.slice(idx + 1, s.length - 1)]
-  console.log('head:', head, 'tail:', tail)
+  // console.log('head:', head, 'tail:', tail)
   tree.head = stringToTree(head)
   tree.tail = stringToTree(tail)
 

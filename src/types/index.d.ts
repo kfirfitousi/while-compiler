@@ -1,4 +1,4 @@
-export type dTree = {
+export interface dTree {
   head?: dTree,
   tail?: dTree
 }
@@ -37,7 +37,7 @@ export type Expr = {
   expr2: Expr
 }
 
-export type CompileOutput = {
+export interface CompileOutput {
   raw?: string,
   string?: string,
   listString?: string,

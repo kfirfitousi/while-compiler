@@ -33,7 +33,6 @@ export const parser = (prog: string): dTree => {
 
 const parseExpr = (expr: string, vars: string[]): Expr => {
   const firstSpace = expr.indexOf(' ')
-  let varId: number
 
   switch (true) {
     case /^cons/.test(expr):
@@ -89,15 +88,13 @@ const parseExpr = (expr: string, vars: string[]): Expr => {
         d: numToTree(Number(parseInt(expr)))
       }
 
-    case /^[a-zA-Z]*/.test(expr): // variable
+    case /^[a-zA-Z]*/.test(expr): {// variable
       console.log('parsing variable expression:', expr)
-      varId = vars.indexOf(expr) + 1
-      if (varId === 0) varId = vars.push(expr)
       return {
         type: 'var',
-        varId
+        varId: vars.indexOf(expr) === -1 ? vars.push(expr) : vars.indexOf(expr) + 1
       }
-
+    }
     default:
       throw new Error(`Invalid expression: ${expr}`);
   }
