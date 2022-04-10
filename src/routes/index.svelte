@@ -9,11 +9,15 @@ while X do {
     Y := cons nil, Y;
     X := tl X;
 }`
-  let input = '(nil.nil)'
+  let input = ''
   let output: CompileOutput = {}
   let showTree = false
 
   const submit = async () => {
+    if (input.trim() === '') {
+      return output.error = 'No Input'
+    }
+
     const res = await fetch('/compile', {
       method: 'POST',
       headers: {
@@ -47,19 +51,24 @@ while X do {
 
 <section class="flex flex-col w-full mx-auto my-5">
   <div class="flex flex-col mb-5 mx-2 lg:mx-20 mx-auto">
-    <span class="pl-1 bg-gray-300 text-gray-600 border-t border-x border-solid border-gray-800">read X;</span>
+    <span class="pl-1 bg-gray-300 text-gray-600 border-t border-x border-solid border-gray-800 rounded-t">read X;</span>
     <Textarea  
       bind:value={code}
       minRows={5}
     />  
-    <span class="pl-1 bg-gray-300 text-gray-600 border-b border-x border-solid border-gray-800">write Y;</span>
+    <span class="pl-1 bg-gray-300 text-gray-600 border-b border-x border-solid border-gray-800 rounded-b">write Y;</span>
   </div>
 
   <div class="flex flex-row mb-5 mx-2 lg:mx-20 mx-auto">
     <span class="mr-2 text-gray-300">Input: </span>
-    <input bind:value={input} class="w-full mx-auto pl-1 border border-solid border-gray-800 bg-gray-300 text-gray-700">
+    <input
+      class="w-full mx-auto pl-1 border border-solid border-gray-800 bg-gray-300 text-gray-700 rounded"
+      placeholder="Number or Tree Notation (e.g. nil, (nil.nil))" 
+      bind:value={input} 
+      on:keydown={(e) => { if (e.key === 'Enter') submit() }} 
+    >
   </div>
-
+  
   <button on:click={submit} class="w-20 p-2 mx-auto bg-gray-300 text-gray-600 border border-solid border-gray-800 rounded">
     Run
   </button>
@@ -152,7 +161,7 @@ while X do {
   > <b>if</b> {'<expr>'} <b>then</b>
     {'\n\t<command>'}  // note: no ';' here
   <b>else</b>
-    {'\n\t<command>'}; // note: ';' here
+    {'\n\t<command>'};
   <hr/>
   {'\n '}
   <b>Multiple commands</b>
