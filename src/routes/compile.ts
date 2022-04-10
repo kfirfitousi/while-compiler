@@ -9,8 +9,8 @@ export async function post({ request }) {
   let { input } = data
   try {
     if ((/^[0-9]*$/).test(input)) { // input is a number
-      input = numToTree(input)
-    } else {
+      input = numToTree(parseInt(input))
+    } else { // input is a string
       input = stringToTree(input)
     }
     const prog = parser(code)
