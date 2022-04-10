@@ -1,41 +1,30 @@
 <script lang="ts">
-	export let value = '';
-	export let minRows = 1;
-	export let maxRows = 50;
+  export let value = '';
+  export let minRows = 1;
 	
-	$: minHeight = `${1 + minRows * 1.25}em`;
-	$: maxHeight = maxRows ? `${1 + maxRows * 1.25}em` : `auto`;
+  $: minHeight = `${1 + minRows * 1.25}em`;
 
-  const keydown = (e) => {
+  const keydown = (e: KeyboardEvent & {currentTarget: HTMLTextAreaElement}) => {
     if (e.key == 'Tab') {
       e.preventDefault();
-      const start = e.target.selectionStart;
-      const end = e.target.selectionEnd;
+      const { selectionStart, selectionEnd } = e.currentTarget;
 
       // set textarea value to: text before caret + tab + text after caret
-      e.target.value = e.target.value.substring(0, start) +
-        "\t" + e.target.value.substring(end);
+      e.currentTarget.value = 
+        e.currentTarget.value.substring(0, selectionStart)
+        + '\t'
+        + e.currentTarget.value.substring(selectionEnd);
 
       // put caret at right position again
-      e.target.selectionStart =
-        e.target.selectionEnd = start + 1;
+      e.currentTarget.selectionStart = e.currentTarget.selectionEnd = selectionStart + 1;
     }
   }
 </script>
+
 <div class="container relative">
-	<pre class="leading-5 py-2" aria-hidden="true" style="min-height: {minHeight}; max-height: {maxHeight}">{value + '\n'}</pre>
-	<textarea class="absolute top-0 h-full w-full pl-4 pt-2 bg-gray-300 text-gray-700 leading-5 border-x border-solid border-gray-800" 
+  <pre class="overflow-hidden leading-5 py-2" aria-hidden="true" style="min-height: {minHeight};">{value + '\n'}</pre>
+  <textarea class="resize-none overflow-hidden absolute top-0 h-full w-full pl-4 pt-2 bg-gray-300 text-gray-700 leading-5 border-x border-solid border-gray-800" 
     bind:value
     on:keydown={keydown}
   />
 </div>
-
-<style>
-	pre, textarea {
-		overflow: hidden;
-	}
-	
-	textarea {
-		resize: none;
-	}
-</style>

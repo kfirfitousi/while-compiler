@@ -6,8 +6,8 @@
 
   let code = `Y := 0;
 while X do {
-    Y := cons 0, Y;
-    X := tl X
+    Y := cons nil, Y;
+    X := tl X;
 }`
   let input = '(nil.nil)'
   let output: CompileOutput = {}
@@ -21,7 +21,7 @@ while X do {
       },
       body: JSON.stringify({ code, input })
     })
-    const data = await res.json();
+    const data: CompileOutput = await res.json();
     
     if (!res.ok) {
       output.error = data.error
@@ -29,6 +29,7 @@ while X do {
     }
     
     output = data
+    output.image = '<p class="text-center text-gray-300">Loading...</p>'
     
     try {
       output.image = await fetchImage(output.raw)
@@ -92,7 +93,9 @@ while X do {
   <h1 class="mb-2 text-center text-2xl text-gray-200">Syntax</h1>
   <hr/>
   <CodeBlock>
-  <svelte:fragment slot="title">Expressions</svelte:fragment>>
+  <svelte:fragment slot="title">
+    Expressions
+  </svelte:fragment>
   <svelte:fragment slot="code">
   <b>Constants</b>
   > nil
@@ -123,7 +126,7 @@ while X do {
   </CodeBlock>
   <CodeBlock>
   <svelte:fragment slot="title">
-  Assign:
+  Assign
   </svelte:fragment>
   <svelte:fragment slot="code">
   <b>Constant</b>
