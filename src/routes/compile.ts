@@ -17,16 +17,29 @@ export async function post({ request }) {
     const com = parser(code)
     const pyProg = compiler(com)
     const prog = buildProgTree(buildComTree(com))
-    const output = interpreter(prog, input)
-    const number = treeToNum(output)
-    return {
-      status: 200,
-      body: {
-        raw: JSON.stringify(output, null, 2),
-        string: treeToString(output),
-        listString: treeToListString(output),
-        number: isNaN(number) ? -1 : number,
-        pyProg
+    let output
+
+    try {
+      output = interpreter(prog, input)
+      const number = treeToNum(output)
+      return {
+        status: 200,
+        body: {
+          raw: JSON.stringify(output, null, 2),
+          string: treeToString(output),
+          listString: treeToListString(output),
+          number: isNaN(number) ? -1 : number,
+          pyProg
+        }
+      }
+    } catch (e) {
+      output = e.message
+      return {
+        status: 400,
+        body: {
+          error: output,
+          pyProg
+        }
       }
     }
   } catch (e) {

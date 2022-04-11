@@ -27,6 +27,7 @@ while X do {
     
     if (!res.ok) {
       output.error = data.error
+      output.pyProg = data.pyProg
       return
     }
     
@@ -61,7 +62,7 @@ while X do {
     <span class="mr-2 text-gray-300">Input: </span>
     <input
       class="w-full mx-auto pl-1 border border-solid border-gray-800 bg-gray-300 text-gray-700 rounded"
-      placeholder="Number or Tree Notation (e.g. nil, (nil.nil))" 
+      placeholder="Tree Notation or Number (e.g. 7, nil, (nil.nil))" 
       bind:value={input} 
       on:keydown={(e) => { if (e.key === 'Enter') submit() }} 
     >
@@ -71,7 +72,7 @@ while X do {
     Run
   </button>
 
-  {#if output.error || output.string} 
+  {#if output.string || output.error} 
     <section class="flex flex-col w-full mx-auto">
       <div class="text-gray-300 border border-solid border-gray-400 my-5 p-10 overflow-scroll">
         <b>Output:</b><br/>
@@ -84,9 +85,11 @@ while X do {
         {/if}
       </div>
 
+      {#if !output.error}
       <button on:click={() => showTree = !showTree} class="w-fit p-2 mx-auto mb-5 bg-gray-300 text-gray-600 border border-solid border-gray-800 rounded">
         {showTree ? 'Hide' : 'Show'} Output Tree
       </button>
+      {/if}
 
       {#if showTree && output.image && !output.error}
         <div class="w-full mx-auto mb-5">
@@ -94,10 +97,12 @@ while X do {
         </div>
       {/if}
 
+      {#if output.pyProg}
       <div class="pl-10 overflow-scroll text-gray-300 border border-solid border-gray-400 mb-5 p-10">
         <b>Python Program:</b>
         <pre>{output.pyProg}</pre>
       </div>
+      {/if}
     </section>
   {/if}
 
