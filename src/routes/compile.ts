@@ -1,6 +1,7 @@
-import { parser } from '$lib/parser';
+import { buildComTree, buildProgTree, parser } from '$lib/parser';
 import { interpreter } from '$lib/interpreter';
 import { stringToTree, treeToString, treeToListString, treeToNum, numToTree } from '$lib/while';
+import { compiler } from '$lib/compiler';
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function post({ request }) {
@@ -13,7 +14,9 @@ export async function post({ request }) {
     } else { // input is a string
       input = stringToTree(input)
     }
-    const prog = parser(code)
+    const com = parser(code)
+    const pyProg = compiler(com)
+    const prog = buildProgTree(buildComTree(com))
     const output = interpreter(prog, input)
     const number = treeToNum(output)
     return {
@@ -22,14 +25,15 @@ export async function post({ request }) {
         raw: JSON.stringify(output, null, 2),
         string: treeToString(output),
         listString: treeToListString(output),
-        number: isNaN(number) ? -1 : number
+        number: isNaN(number) ? -1 : number,
+        pyProg
       }
     }
   } catch (e) {
     return {
       status: 400,
       body: {
-        error: e.message
+        error: e.message,
       }
     }
   }

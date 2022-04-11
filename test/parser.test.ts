@@ -1,5 +1,5 @@
 import { interpreter } from '../src/lib/interpreter'
-import { parser } from '../src/lib/parser'
+import { buildComTree, buildProgTree, parser } from '../src/lib/parser'
 import { 
   stringToTree,
   numToTree,
@@ -44,7 +44,8 @@ const sums = [
 
 test.each(treeStrings)('testing parser: prog1', (str) => {
   const progText = 'Y := 7'
-  const prog = parser(progText)
+  const progCom = parser(progText)
+  const prog = buildProgTree(buildComTree(progCom))
   const input = stringToTree(str)
 
   expect(prog).toStrictEqual(
@@ -68,7 +69,8 @@ test.each(treeStrings)('testing parser: prog1', (str) => {
 
 test.each(nums)('testing parser: prog2 (ident)', (n) => {
   const progText = 'Y := X'
-  const prog = parser(progText)
+  const progCom = parser(progText)
+  const prog = buildProgTree(buildComTree(progCom))
   const input = numToTree(n)
 
   expect(prog).toStrictEqual(
@@ -97,7 +99,8 @@ test.each(treeStrings)('testing parser: prog3 (len)', (str) => {
     Y := cons 0, Y;
     X := tl X
   }`
-  const prog = parser(progText)
+  const progCom = parser(progText)
+  const prog = buildProgTree(buildComTree(progCom))
   const input = stringToTree(str)
 
   expect(interpreter(prog, input))
@@ -116,7 +119,8 @@ test.each(treeStrings)('testing parser: prog4 (infinite loop)', (str) => {
     }
   else 
     Y := 0`
-  const prog = parser(progText)
+  const progCom = parser(progText)
+  const prog = buildProgTree(buildComTree(progCom))
   const input = stringToTree(str)
 
   expect(() => interpreter(prog, input))
@@ -138,7 +142,8 @@ test.each(sums)('testing parser: prog5 (sum)', (a, b, sum) => {
     Y := cons 0, Y;
     B := tl B
   }`
-  const prog = parser(progText)
+  const progCom = parser(progText)
+  const prog = buildProgTree(buildComTree(progCom))
   const input = cons(numToTree(a), numToTree(b)) // (a.b)
 
   expect(interpreter(prog, input))
@@ -149,7 +154,8 @@ test.each(sums)('testing parser: prog5 (sum)', (a, b, sum) => {
 
 test.each(treeStrings)('testing parser: prog6 (list)', (str) => {
   const progText = 'Y := list X, 1, 2, 3'
-  const prog = parser(progText)
+  const progCom = parser(progText)
+  const prog = buildProgTree(buildComTree(progCom))
   const input = stringToTree(str)
 
   expect(interpreter(prog, input)).toStrictEqual(
@@ -166,7 +172,8 @@ test.each(treeStrings)('testing parser: prog7 (list2)', (str) => {
   const progText =
   `Z := cons X, X;
   Y := list 1, hd X, tl X, Z;`
-  const prog = parser(progText)
+  const progCom = parser(progText)
+  const prog = buildProgTree(buildComTree(progCom))
   const input = stringToTree(str)
 
   expect(interpreter(prog, input)).toStrictEqual(

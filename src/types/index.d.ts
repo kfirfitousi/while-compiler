@@ -42,6 +42,7 @@ export interface CompileOutput {
   string?: string,
   listString?: string,
   number?: number,
+  pyProg?: string,
   image?: string,
   error?: string
 }

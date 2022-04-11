@@ -6,7 +6,7 @@ import {
   COM
 } from '$lib/while'
 
-export const parser = (prog: string): dTree => {
+export const parser = (prog: string): Com => {
   const vars = ['X', 'Y']
 
   const com = prog
@@ -28,7 +28,8 @@ export const parser = (prog: string): dTree => {
       }
     })
   
-  return buildProgTree(buildComTree(com))
+  // return buildProgTree(buildComTree(com))
+  return com
 }
 
 const parseExpr = (expr: string, vars: string[]): Expr => {
@@ -135,7 +136,7 @@ const parseCom = (com: string, vars: string[]): Com => {
           vars
         ),
         do: parseCom(
-          com.slice(com.indexOf('do') + 2),
+          com.slice(com.indexOf('do') + 2).trim(),
           vars
         )
       }
@@ -147,7 +148,7 @@ const parseCom = (com: string, vars: string[]): Com => {
       return com
         .slice(com.indexOf('[') + 1, com.indexOf(']', com.indexOf('[') + 1))
         .split('|')
-        .filter(Boolean)
+        .filter((line) => line.trim() !== '' && line.trim() !== '|')
         .map((line) => parseCom(line.trim(), vars))
         .reduce((com, c) => {
           if (com === undefined) return c

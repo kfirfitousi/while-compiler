@@ -14,9 +14,7 @@ while X do {
   let showTree = false
 
   const submit = async () => {
-    if (input.trim() === '') {
-      return output.error = 'No Input'
-    }
+    if (input.trim() === '') input = 'nil'
 
     const res = await fetch('/compile', {
       method: 'POST',
@@ -75,24 +73,31 @@ while X do {
 
   {#if output.error || output.string} 
     <section class="flex flex-col w-full mx-auto">
-      <pre class="overflow-scroll text-gray-300 border border-solid border-gray-400 my-5">
-        <b>Output:</b>
+      <div class="text-gray-300 border border-solid border-gray-400 my-5 p-10 overflow-scroll">
+        <b>Output:</b><br/>
         {#if output.error}
         {output.error === 'Bottom' ? 'Bottom' : `Error: ${output.error}`}
         {:else}
-        Tree Notation: {output.string}
-        List Notation: {output.listString}
-        Number: {output.number === -1 ? 'Not a number ': output.number}
-        {/if}      
-      </pre>
+        <span class="underline">Tree Notation</span>: {output.string}<br/>
+        <span class="underline">List Notation</span>: {output.listString}<br/>
+        <span class="underline">Number</span>: {output.number === -1 ? 'Not a number ': output.number}<br/>
+        {/if}
+      </div>
+
       <button on:click={() => showTree = !showTree} class="w-fit p-2 mx-auto mb-5 bg-gray-300 text-gray-600 border border-solid border-gray-800 rounded">
         {showTree ? 'Hide' : 'Show'} Output Tree
       </button>
+
       {#if showTree && output.image && !output.error}
-        <div class="w-full mx-auto">
+        <div class="w-full mx-auto mb-5">
           {@html output.image}
         </div>
       {/if}
+
+      <div class="pl-10 overflow-scroll text-gray-300 border border-solid border-gray-400 mb-5 p-10">
+        <b>Python Program:</b>
+        <pre>{output.pyProg}</pre>
+      </div>
     </section>
   {/if}
 
