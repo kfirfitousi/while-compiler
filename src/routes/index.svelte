@@ -12,6 +12,7 @@ while X do {
   let input = ''
   let output: CompileOutput = {}
   let showTree = false
+  let showPy = false
 
   const submit = async () => {
     if (input.trim() === '') input = 'nil'
@@ -40,6 +41,16 @@ while X do {
     catch (e) {
       console.error(e)
     }
+  }
+
+  function download(filename: string, text: string) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
   }
 </script>
 
@@ -74,7 +85,7 @@ while X do {
 
   {#if output.string || output.error} 
     <section class="flex flex-col w-full mx-auto">
-      <div class="text-gray-300 border border-solid border-gray-400 my-5 p-10 overflow-scroll">
+      <div class="text-gray-300 border border-solid border-gray-400 my-5 p-10 overflow-scroll whitespace-nowrap">
         <b>Output:</b><br/>
         {#if output.error}
         {output.error === 'Bottom' ? 'Bottom' : `Error: ${output.error}`}
@@ -82,25 +93,35 @@ while X do {
         <span class="underline">Tree Notation</span>: {output.string}<br/>
         <span class="underline">List Notation</span>: {output.listString}<br/>
         <span class="underline">Number</span>: {output.number === -1 ? 'Not a number ': output.number}<br/>
-        {/if}
-      </div>
-
-      {#if !output.error}
-      <button on:click={() => showTree = !showTree} class="w-fit p-2 mx-auto mb-5 bg-gray-300 text-gray-600 border border-solid border-gray-800 rounded">
-        {showTree ? 'Hide' : 'Show'} Output Tree
-      </button>
-      {/if}
-
-      {#if showTree && output.image && !output.error}
-        <div class="w-full mx-auto mb-5">
+        <button on:click={() => showTree = !showTree} class="w-fit px-2 mx-auto mt-2 mb-4 bg-gray-300 text-gray-600 border border-solid border-gray-800 rounded">
+          {showTree ? 'Hide' : 'Show'} Output Tree
+        </button>
+        {#if showTree && output.image}
+        <div class="w-full mx-auto">
           {@html output.image}
         </div>
-      {/if}
+        {/if}
+        {/if}
+      </div>
 
       {#if output.pyProg}
       <div class="pl-10 overflow-scroll text-gray-300 border border-solid border-gray-400 mb-5 p-10">
         <b>Python Program:</b>
+        <button
+          class="w-fit px-2 border border-solid border border-gray-800 rounded bg-gray-300 text-gray-600"
+          on:click={() => showPy = !showPy}
+        >
+          {showPy ? 'Hide' : 'Show'}
+        </button>
+        <button
+          class="w-fit px-2 border border-solid border border-gray-800 rounded bg-gray-300 text-gray-600" 
+          on:click={() => download('prog.py', output.pyProg.trim())}
+        >
+          Download
+        </button>
+        {#if showPy}
         <pre>{output.pyProg}</pre>
+        {/if}
       </div>
       {/if}
     </section>
