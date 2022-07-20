@@ -33,11 +33,10 @@ export async function post({ request }) {
         }
       }
     } catch (e) {
-      output = e.message
       return {
         status: 400,
         body: {
-          error: output,
+          error: e.message,
           pyProg
         }
       }

@@ -90,9 +90,9 @@ while X do {
         {#if output.error}
         {output.error === 'Bottom' ? 'Bottom' : `Error: ${output.error}`}
         {:else}
-        <span class="underline">Tree Notation</span>: {output.string}<br/>
-        <span class="underline">List Notation</span>: {output.listString}<br/>
-        <span class="underline">Number</span>: {output.number === -1 ? 'Not a number ': output.number}<br/>
+        Tree Notation: {output.string}<br/>
+        List Notation: {output.listString}<br/>
+        Number: {output.number === -1 ? 'Not a number ': output.number}<br/>
         <button on:click={() => showTree = !showTree} class="w-fit px-2 mx-auto mt-2 mb-4 bg-gray-300 text-gray-600 border border-solid border-gray-800 rounded">
           {showTree ? 'Hide' : 'Show'} Output Tree
         </button>

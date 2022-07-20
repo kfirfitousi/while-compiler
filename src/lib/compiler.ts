@@ -1,7 +1,5 @@
 import type { Com, Expr } from "src/types"
-import {
-  treeToNum
-} from '$lib/while'
+import { treeToNum } from '$lib/while'
 
 export const compiler = (com: Com): string => {
   const vars = ['X', 'Y']
